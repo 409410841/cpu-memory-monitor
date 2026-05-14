@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import psutil
+import random
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -12,6 +12,8 @@ app.add_middleware(
 @app.get("/system")
 def system():
     return{
-        "cpu":psutil.cpu_percent(),
-        "memory":psutil.virtual_memory().percent
+        "cpu": random.randint(0, 100),
+        "memory": random.randint(0,100),
+        "disk": random.randint(0,100),
+        "network": random.randint(0,100)
     }
