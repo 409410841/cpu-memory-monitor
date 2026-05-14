@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import random
+import psutil
+
 app = FastAPI()
+
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -9,11 +12,21 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 @app.get("/system")
-def system():
-    return{
-        "cpu": random.randint(0, 100),
-        "memory": random.randint(0,100),
-        "disk": random.randint(0,100),
-        "network": random.randint(0,100)
+def get_metrics():
+
+    cpu = psutil.cpu_percent()
+
+    memory = psutil.virtual_memory().percent
+
+    disk = psutil.disk_usage("/").percent
+
+    network = psutil.net_io_counters().bytes_sent / 1024 / 1024
+
+    return {
+        "cpu": cpu,
+        "memory": memory,
+        "disk": disk,
+        "network": round(network, 2)
     }
